@@ -1,80 +1,49 @@
 # OmniMIRA
 
-## Current release status
+OmniMIRA learns brain-region representations from T1-weighted MRI, amyloid PET, FDG PET and CT. It combines local image features within atlas-defined regions, allowing the same embeddings to be used for downstream prediction and regional analysis.
 
-**Source-code preview only. Model weights, a verified checkpoint and a hosted demo are not yet publicly available.**
+## Release status
 
-The current manuscript describes an anatomically indexed foundation model pretrained on **91,880 scans**, evaluated across **24 tasks in 11 cohorts**. The source and configuration metadata below originate from an earlier development release and have not yet been reconciled with the final manuscript experiments. Historical counts in configuration files are not the current manuscript counts. This preview is not a complete reproduction package.
+This is an initial source-code release. The included implementation and configurations are from an earlier development version and are being aligned with the final manuscript. Pretrained weights are not yet available. See the [release roadmap](TODO.md) for planned updates.
 
-Checkpoint files and third-party atlas and MNI reference images are deliberately omitted. Installation provides source code only. The feature-extraction commands below describe the development interface and require resources that are not yet included in this release. See [TODO.md](TODO.md) for progress.
-
-OmniMIRA is an anatomically indexed foundation model for mixed-modality
-neuroimaging. It extracts frozen ROI embeddings from T1 MRI, amyloid-PET,
-FDG-PET and CT.
-
-## Install
+## Installation
 
 ```bash
 pip install -e .
 ```
 
-## Extract ROI features
+## Usage
+
+Feature extraction requires a pretrained checkpoint and the atlas and MNI reference files, which are not included in this release. The example interface is:
 
 ```bash
 python examples/extract_roi_features.py \
   --input scan_mni.nii.gz \
   --modality t1 \
-  --checkpoint omnimira_public_v1.pt \
+  --checkpoint /path/to/checkpoint.pt \
   --output features.npz
 ```
 
-Before extraction, verify the fixed atlas contract. This is also the supported
-path for a release that does not redistribute third-party atlas binaries:
+The output contains 128-dimensional embeddings for each region: 166 AAL3 regions, 69 Harvard–Oxford regions and 7 Yeo networks.
 
-```bash
-export OMNIMIRA_ATLAS_DIR=/absolute/path/to/omnimira-atlases
-python scripts/verify_atlases.py --atlas-dir "$OMNIMIRA_ATLAS_DIR"
-```
+- [Input preparation](docs/input_preparation.md)
+- [Atlas setup](docs/atlas_setup.md)
+- [Output format](docs/output_format.md)
+- [Model architecture](docs/model_architecture.md)
+- [Pretraining](docs/training.md)
 
-The loader resamples an MNI-standardized scan to the canonical RAS+ model grid,
-applies the modality-specific normalization and exports float32 ROI embeddings:
+## Tests
 
-- AAL3: `(166, 128)`
-- Harvard-Oxford: `(69, 128)`
-- Yeo 7-network: `(7, 128)`
-
-The final checkpoint provenance and configuration will be verified before publication. No public checkpoint is available yet.
-
-## Test
-
-The model and loss unit tests use synthetic inputs:
+Model and loss tests use synthetic inputs:
 
 ```bash
 python -m pytest -q tests/test_model_forward.py tests/test_losses.py
 ```
 
-The complete suite additionally requires verified atlas and template resources:
+The full test suite also requires the atlas and template files.
 
-```bash
-OMNIMIRA_ATLAS_DIR=/absolute/path/to/omnimira-atlases python -m pytest -q
-```
+## License
 
-See `docs/atlas_setup.md`, `docs/input_preparation.md`,
-`docs/output_format.md` and `docs/training.md` for the exact contracts.
-Research use only; this software is not a clinical or diagnostic device.
+Source code is available under the [Apache 2.0 license](LICENSE). Third-party resources have [separate terms](THIRD_PARTY_NOTICES.md).
 
-## Export the public repository
-
-This directory is maintained inside a larger research workspace. Export a
-standalone GitHub-ready tree rather than pushing that workspace directly:
-
-```bash
-python scripts/export_public_tree.py --output ../OmniMIRA-public
-cd ../OmniMIRA-public
-python scripts/audit_public_release.py
-git init
-```
-
-The export excludes internal audit records, pre-release result artifacts and
-third-party atlas resources. It retains the public release contract and the
-external atlas verification command.
+For research use only; not for clinical diagnosis.

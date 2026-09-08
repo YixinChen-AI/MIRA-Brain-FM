@@ -1,7 +1,6 @@
 # Pretraining OmniMIRA
 
-The public checkpoint is trained from the paper-defined implementation in this
-repository. The seven objectives are patch reconstruction, ROI masked
+The training code includes seven objectives: patch reconstruction, ROI masked
 autoencoding, cross-modal ROI identity, augmentation consistency,
 chronological age, native-space ROI volume and spatial geometry. Active terms
 are combined with homoscedastic uncertainty weighting.
@@ -39,10 +38,10 @@ The converted manifest remains private because it contains local data paths.
 The training checkpoint records its SHA256 digest and the recipe digest, not
 those paths.
 
-The public sampler constructs a batch size 64 with 16 scans from each of T1,
+The sampler constructs batches of 64 scans, with 16 scans from each of T1,
 amyloid-PET, FDG-PET and CT, and at least 32 distinct participants.
 
-Before launching public pretraining, validate the manifest and its referenced
+Before training, validate the manifest and its referenced
 paths:
 
 ```bash
@@ -74,8 +73,8 @@ python scripts/audit_pretraining_inputs.py \
   --manifest omnimira_public_pretrain.json --strict
 ```
 
-Do not relabel a legacy NumPy cache as V4. When the audit finds missing or
-invalid sidecars, rebuild the private cache from an MNI-space NIfTI manifest:
+If cached NumPy inputs have missing or invalid sidecars, rebuild the cache
+from an MNI-space NIfTI manifest:
 
 ```bash
 python scripts/prepare_pretraining_cache.py \

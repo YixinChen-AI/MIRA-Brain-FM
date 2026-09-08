@@ -1,7 +1,7 @@
 # Atlas setup
 
 OmniMIRA extracts a fixed set of AAL3v1, Harvard--Oxford-69 and Yeo-7 ROI
-features. The public model contract is tied to the exact three atlas binaries
+features. The implementation requires the exact three atlas files
 listed below. An atlas with the same name but different voxel grid, label map
 or hash is not interchangeable.
 
@@ -26,8 +26,8 @@ written into the feature archive:
 | `HarvardOxford69_labels.txt` | `6ce228f7e86ac10838562b9c39301b0bb0ffa54678edf1bf7c91ad2fefb9c4d7` |
 | `Yeo7_labels.txt` | `ca23ed960895a5b847603672ef2110b4e8ff13b0552359920b18fa58abdf48b8` |
 
-Obtain atlas source files under their upstream terms, construct the listed
-derived files only through the documented release procedure, then verify them:
+The atlas files are not bundled; acquisition and preparation instructions are
+still being completed. If you already have the matching files, verify them with:
 
 ```bash
 export OMNIMIRA_ATLAS_DIR=/absolute/path/to/omnimira-atlases
@@ -40,9 +40,6 @@ even one byte.
 
 ## Redistribution status
 
-The external-directory route exists so a release can remain usable without
-redistributing third-party atlas binaries. The exact redistribution status and
-required attribution for each atlas are maintained in
-[`THIRD_PARTY_NOTICES.md`](../THIRD_PARTY_NOTICES.md). Do not publish a tag
-that contains an atlas binary until its upstream and derivative terms have
-been recorded there.
+Atlas files are subject to their upstream licenses. See
+[`THIRD_PARTY_NOTICES.md`](../THIRD_PARTY_NOTICES.md) for attribution and
+redistribution status.
