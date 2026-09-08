@@ -1,5 +1,8 @@
 # Pretraining OmniMIRA
 
+This guide describes the included development configuration. The configuration
+for the final manuscript experiments is not yet released.
+
 The training code includes seven objectives: patch reconstruction, ROI masked
 autoencoding, cross-modal ROI identity, augmentation consistency,
 chronological age, native-space ROI volume and spatial geometry. Active terms
@@ -24,25 +27,24 @@ optional; missing targets are masked from their corresponding losses.
 ]
 ```
 
-If the authorised training environment already maintains a private manifest
-with `npy_path` and `subject` fields, convert it once without altering the
-underlying records:
+For existing manifests with `npy_path` and `subject` fields, convert the field
+names with:
 
 ```bash
 python scripts/build_public_pretraining_manifest.py \
-  --input private_source_manifest.json \
-  --output omnimira_public_pretrain.json
+  --input source_manifest.json \
+  --output manifest.json
 ```
 
-The converted manifest remains private because it contains local data paths.
-The training checkpoint records its SHA256 digest and the recipe digest, not
-those paths.
+Manifests contain local data paths and should not be committed to a public
+repository. Checkpoints record manifest and recipe hashes rather than those paths.
 
 The sampler constructs batches of 64 scans, with 16 scans from each of T1,
 amyloid-PET, FDG-PET and CT, and at least 32 distinct participants.
 
-Before training, validate the manifest and its referenced
-paths:
+## Input checks
+
+Before training, validate the manifest and its referenced paths:
 
 ```bash
 python scripts/validate_pretraining_manifest.py --manifest manifest.json
@@ -52,25 +54,23 @@ Also verify the atlas binaries used for this run. Set `OMNIMIRA_ATLAS_DIR` when
 the atlases are supplied outside the package:
 
 ```bash
+export OMNIMIRA_ATLAS_DIR=/absolute/path/to/omnimira-atlases
 python scripts/verify_atlases.py --atlas-dir "$OMNIMIRA_ATLAS_DIR"
 ```
 
-Run the complete launch preflight before scheduling a GPU job. This checks the
+Check the setup before training. This checks the
 manifest, atlas identities, ROI mappings and model construction without reading
 individual training images:
 
 ```bash
-OMNIMIRA_ATLAS_DIR=/absolute/path/to/omnimira-atlases \
-python scripts/pretrain.py --manifest omnimira_public_pretrain.json --preflight
+python scripts/pretrain.py --manifest manifest.json --preflight
 ```
 
-For a private NumPy cache, audit sidecar compliance on an allocated CPU node
-before training. The command reports only aggregate counts and never writes
-input paths to its output:
+For cached NumPy inputs, check the preprocessing metadata:
 
 ```bash
 python scripts/audit_pretraining_inputs.py \
-  --manifest omnimira_public_pretrain.json --strict
+  --manifest manifest.json --strict
 ```
 
 If cached NumPy inputs have missing or invalid sidecars, rebuild the cache
@@ -79,20 +79,20 @@ from an MNI-space NIfTI manifest:
 ```bash
 python scripts/prepare_pretraining_cache.py \
   --input raw_nifti_manifest.json \
-  --cache-dir /private/output/omnimira_v4_cache \
-  --output omnimira_public_pretrain.json
+  --cache-dir /path/to/cache \
+  --output manifest.json
 ```
 
-This command uses the committed RAS world-coordinate resampling and
+This command applies RAS world-coordinate resampling and
 modality-specific normalization, then writes the matching `normalized_v2`
-sidecar beside every cache file. It intentionally rejects legacy `.npy` files
+sidecar beside every cache file. It rejects legacy `.npy` files
 as source inputs because they do not retain enough spatial provenance.
 
 The validator rejects missing modalities, fewer than 16 scans in a modality,
 fewer than 32 distinct `subject_id` values, missing paths and unsupported
 modalities. It does not read image contents.
 
-## Run
+## Training
 
 ```bash
 python scripts/pretrain.py \
@@ -101,7 +101,7 @@ python scripts/pretrain.py \
   --out-dir runs/omnimira_public
 ```
 
-The V4 recipe uses AdamW (`betas=(0.9, 0.95)`, weight decay `0.05`), a base
+The included recipe uses AdamW (`betas=(0.9, 0.95)`, weight decay `0.05`), a base
 learning rate of `1.5e-4`, 30 warm-up epochs from `1.5e-6`, cosine decay to
 `1e-6`, 300 epochs and BF16 where supported. Checkpoints include the model,
 loss state, optimizer state, RNG state and `model_version`.

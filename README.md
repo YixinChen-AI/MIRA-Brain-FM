@@ -1,5 +1,7 @@
 # OmniMIRA
 
+### An anatomically indexed foundation model across structural, molecular and metabolic neuroimaging
+
 OmniMIRA learns brain-region representations from T1-weighted MRI, amyloid PET, FDG PET and CT. It combines local image features within atlas-defined regions, allowing the same embeddings to be used for downstream prediction and regional analysis.
 
 ## Release status
@@ -8,7 +10,13 @@ This is an initial source-code release. The included implementation and configur
 
 ## Installation
 
+Requires Python 3.9 or later and PyTorch 2.0 or later.
+
 ```bash
+git clone https://github.com/YixinChen-AI/MIRA-Brain-FM.git
+cd MIRA-Brain-FM
+python -m venv .venv
+source .venv/bin/activate
 pip install -e .
 ```
 
@@ -26,6 +34,10 @@ python examples/extract_roi_features.py \
 
 The output contains 128-dimensional embeddings for each region: 166 AAL3 regions, 69 Harvard–Oxford regions and 7 Yeo networks.
 
+The modality options are `t1` (T1-weighted MRI), `av45` (amyloid PET), `fdg` (FDG PET) and `ct` (CT).
+
+## Documentation
+
 - [Input preparation](docs/input_preparation.md)
 - [Atlas setup](docs/atlas_setup.md)
 - [Output format](docs/output_format.md)
@@ -37,10 +49,15 @@ The output contains 128-dimensional embeddings for each region: 166 AAL3 regions
 Model and loss tests use synthetic inputs:
 
 ```bash
+pip install pytest
 python -m pytest -q tests/test_model_forward.py tests/test_losses.py
 ```
 
 The full test suite also requires the atlas and template files.
+
+## Questions
+
+For questions about the code, please [open an issue](https://github.com/YixinChen-AI/MIRA-Brain-FM/issues).
 
 ## License
 

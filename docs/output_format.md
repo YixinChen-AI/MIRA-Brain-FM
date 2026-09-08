@@ -4,7 +4,7 @@
 loadable with `numpy.load(path, allow_pickle=False)`. Model version is fixed as
 `omnimira-public-v1`; the archive records the SHA256 of the checkpoint bytes.
 
-## Exact keys
+## Archive contents
 
 The archive contains exactly: `schema_version`, `model_version`,
 `checkpoint_sha256`, `modality`, `feature_dim`, `feature_dtype`,
@@ -24,9 +24,10 @@ included. The model uses contiguous indices `0..165`, while `aal3_roi_ids`
 preserves the corresponding raw atlas IDs.
 
 HO69 uses IDs `1..69`: 48 Harvard-Oxford cortical labels followed by 21
-subcortical labels. Yeo7 uses LUT IDs `1..7`. Static derived names and source
-hashes are packaged in `assets/atlases`; no atlas or label is downloaded at
-runtime. `atlas_hashes_json` records the exact packaged NIfTI SHA256 values.
+subcortical labels. Yeo7 uses LUT IDs `1..7`. Label-source metadata is
+included in `assets/atlases`; atlas images and label tables must be supplied
+separately as described in [Atlas setup](atlas_setup.md). No atlas or label
+is downloaded at runtime. `atlas_hashes_json` records the atlas SHA256 values.
 
 ## Source metadata
 

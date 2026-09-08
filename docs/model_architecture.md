@@ -1,6 +1,6 @@
 # Model architecture
 
-OmniMIRA contains two public components.
+OmniMIRA has two main components.
 
 **Modality-Conditioned Local Patch Encoder (MCLP).** Four modality-specific 3D
 patch embedding layers map scans to a shared 128-dimensional patch space.
@@ -9,9 +9,9 @@ independently at each patch position, without cross-patch mixing.
 
 **Anatomy-Anchored ROI Tokenizer (AART).** Each atlas is resampled to the same
 RAS+ model grid. A patch is associated with every ROI that overlaps its voxel
-cube, so small atlas regions are not lost at the 8-voxel patch resolution. A
+cube, allowing a patch to contribute to more than one region. A
 learned scalar attention score aggregates the associated patches within each
-ROI. The public configuration produces 166 AAL3, 69 Harvard-Oxford and 7 Yeo
+ROI. The included configuration produces 166 AAL3, 69 Harvard-Oxford and 7 Yeo
 ROI embeddings.
 
 The pretraining-only ROI-MAE decoder receives atlas-specific ROI identity
