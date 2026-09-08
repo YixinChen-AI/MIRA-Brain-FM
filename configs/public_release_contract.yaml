@@ -1,0 +1,15 @@
+schema_version: 1
+status: public_retraining_pending
+model_config: configs/omnimira_3atlas.yaml
+checkpoint_manifest: checkpoints/manifest.json
+manuscript_contract: configs/manuscript_contract_v4.yaml
+release_provenance: docs/release_provenance.md
+required_result_evidence:
+  manifest: checkpoints/golden_manifest.json
+  arrays: checkpoints/golden_summaries.npz
+publication_gates:
+  - public_checkpoint_training
+  - checkpoint_redistribution
+  - atlas_redistribution
+  - self_contained_result_evidence
+  - committed_manuscript_revision

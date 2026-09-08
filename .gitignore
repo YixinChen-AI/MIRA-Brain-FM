@@ -1,0 +1,29 @@
+# Scoped ignores for the release package.
+
+# Atlas label volumes are intentionally committed (small, versioned) — re-include
+# them despite the repo-wide *.nii / *.nii.gz ignore.
+*.nii
+*.nii.gz
+*.pt
+*.pth
+*.ckpt
+*.npy
+*.npz
+.env
+.env.*
+.DS_Store
+
+# Demo sample cases (precomputed from public inputs) are intentionally committed,
+# including their .npz feature exports, despite the repo-wide *.npz ignore.
+
+# Release-contract metadata and frozen pre-refactor references are intentional.
+!checkpoints/
+!checkpoints/README.md
+!checkpoints/manifest.json
+!checkpoints/release_checkpoint_inventory.json
+
+# Local test / build noise
+.pytest_cache/
+*.egg-info/
+build/
+__pycache__/

@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "checkpoints": [
+    {
+      "filename": "omnimira_public_v1.pt",
+      "version": "omnimira-public-v1",
+      "sha256": null,
+      "bytes": null,
+      "license": "to be assigned before publication",
+      "state": "training_pending",
+      "url": null,
+      "provenance": {
+        "implementation": "configs/omnimira_3atlas.yaml",
+        "note": "Manifest identity is populated only after paper-aligned public retraining."
+      }
+    }
+  ]
+}

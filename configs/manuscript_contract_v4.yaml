@@ -1,0 +1,61 @@
+schema_version: 1
+source_path_at_audit: docs/provenance/manuscript_v4_main.tex
+source_sha256: 7553dc39bacaac630fe5c48c21c0b2744e58bd8dc77a113bc6fe6703d4a2de98
+source_git_blob: 1025a59a891262c54d071ecc96cb1f0b741b0d5a
+source_git_commit: null
+source_git_state: untracked_at_audit
+audit_date: 2026-07-15
+title: 'OmniMIRA: an anatomically interpretable foundation model for multimodal neuroimaging'
+components: [MCLP, AART]
+modalities: [t1, av45, fdg, ct]
+image_dimensions: [96, 112, 96]
+patch_size: 8
+embedding_dimension: 128
+atlases:
+  aal3: 166
+  ho69: 69
+  yeo7: 7
+active_objectives:
+  - patch_ae
+  - roi_mae
+  - cross_modal
+  - augmentation_consistency
+  - age
+  - roi_volume
+  - spatial_metric
+preprocessing:
+  resampling: trilinear
+  t1_percentiles: [1, 99]
+  pet_suvr_clip: 3.0
+  ct_hu_window: [0, 80]
+  roi_mask_ratio: 0.9
+training:
+  loss_weighting: homoscedastic_uncertainty
+  batch_size: 64
+  learning_rate: 1.5e-4
+  total_epochs: 300
+  data_summary:
+    scans: 33309
+    unique_participants: 9094
+    cohorts: 13
+    modalities:
+      t1: 26307
+      av45: 3726
+      fdg: 1143
+      ct: 2133
+implementation_status: paper_aligned_public_retraining_pending
+aal3_label_contract:
+  valid_label_count: 166
+  excluded_placeholder_ids: [35, 36, 81, 82]
+  retained_high_ids: [167, 168, 169, 170]
+  model_indexing: dense_zero_based
+  output_contract: docs/output_format.md
+input_space_audit:
+  status: canonical_ras_public_contract
+  input_contract_path: configs/input_contract.yaml
+  input_contract_sha256: f56a026a13bca988ba990f5e76bbc015e5fe6b2c152ec8f2bfb4bf3e27dcb613
+  resources:
+    mni152_ras_model_grid.nii.gz: e183125228dbe45ef0331695f2520b8b6c25142347347c6dda23bb6a2e8585db
+    model_brain_mask_ras.nii.gz: f8d3c177f73d3a7f94882facc354cecc8af219fe20f0f798f98594298bdf0852
+    aal3_labels_95_120_model_reference_mask.nii.gz: 1bde883912a36c1aaa5115dda92ab3ed981bd0cef7c7d068bbdfd8ce8220cd7a
+  source_redistribution_status: unresolved

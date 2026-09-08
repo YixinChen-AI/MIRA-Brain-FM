@@ -1,0 +1,17 @@
+{
+  "aal3": {
+    "ordering": "occupied AAL3v1 labels in ascending raw-label order; labels 35, 36, 81, and 82 are absent, while labels 167 through 170 are retained",
+    "sources": [{"path": "AAL3v1_labels.txt", "sha256": "5c643d5bef449948af5d92f116cc2eeb670777a500882ce6e523a033837ffd08"}]
+  },
+  "ho69": {
+    "ordering": "48 cortical labels followed by 21 subcortical labels",
+    "sources": [
+      {"source": "FSL HarvardOxford-Cortical.xml via nilearn", "sha256": "b8eb5ba5e787a4d3b442f75041f533f31b278a83e467bd2ab22438c1cff36581"},
+      {"source": "FSL HarvardOxford-Subcortical.xml via nilearn", "sha256": "576f825bcc51e2afaa5411aef85858091fcaf823e27415f9f263fbca4743ba8b"}
+    ]
+  },
+  "yeo7": {
+    "ordering": "numeric LUT IDs 1..7",
+    "sources": [{"source": "Yeo2011_7Networks_ColorLUT.txt via nilearn", "sha256": "f6e68af76dffac569c4e6b5d7cfe13036e5ce0a702192a3774ddae48af985e26"}]
+  }
+}

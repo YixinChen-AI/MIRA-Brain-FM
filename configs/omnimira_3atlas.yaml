@@ -1,0 +1,76 @@
+# Paper-defined public OmniMIRA architecture and V4 pretraining recipe.
+model:
+  component_names: [MCLP, AART]
+  img_size: [96, 112, 96]
+  patch_size: 8
+  embed_dim: 128
+  mlp_depth: 4
+  mlp_ratio: 4.0
+  n_modalities: 4
+  n_rois: 166
+  contrastive_dim: 64
+  mask_ratio: 0.9
+  decoder_depth: 2
+  decoder_heads: 4
+  pool: {kind: attention, k: 1}
+
+data:
+  modality_order: [t1, av45, fdg, ct]
+
+atlases:
+  - name: aal3
+    path: assets/atlases/AAL3v1_1mm.nii
+    n_rois: 166
+    objectives: [roi_mae, cross_modal, augmentation_consistency, age, roi_volume, spatial_metric]
+  - name: ho69
+    path: assets/atlases/harvard_oxford_69_mni_1mm.nii.gz
+    n_rois: 69
+    objectives: [roi_mae, cross_modal, augmentation_consistency, age, roi_volume, spatial_metric]
+  - name: yeo7
+    path: assets/atlases/yeo7_mni_1mm.nii.gz
+    n_rois: 7
+    objectives: [roi_mae, cross_modal, augmentation_consistency, age, roi_volume]
+
+heads:
+  - {name: patch_ae, family: patch_recon, out_dim: 0}
+  - {name: roi_mae, family: roi_mae, out_dim: 0}
+  - {name: cross_modal, family: contrast, out_dim: 64}
+  - {name: augmentation_consistency, family: augmentation, out_dim: 0}
+  - {name: age, family: regression, out_dim: 1}
+  - {name: roi_volume, family: roi_volume, out_dim: 1}
+  - {name: spatial_metric, family: spatial, out_dim: 3}
+
+sampler:
+  batch_size: 64
+  n_per_modality: 16
+  min_unique_subjects: 32
+
+loss:
+  weighting: homoscedastic_uncertainty
+  tau: 0.2
+  use_uncertainty_weighting: true
+
+optim:
+  lr: 1.5e-4
+  min_lr: 1.0e-6
+  warmup_start_lr: 1.5e-6
+  weight_decay: 0.05
+  betas: [0.9, 0.95]
+  warmup_epochs: 30
+  total_epochs: 300
+
+preprocessing:
+  resampling: trilinear
+  t1_percentiles: [1, 99]
+  pet_suvr_clip: 3.0
+  ct_hu_window: [0, 80]
+  roi_mask_ratio: 0.9
+
+augmentation:
+  t1_noise_sigma: 0.02
+  pet_suvr_jitter: 0.05
+
+system:
+  precision: bf16
+  num_workers: 8
+  seed: 42
