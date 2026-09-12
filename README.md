@@ -4,62 +4,50 @@
 
 OmniMIRA learns brain-region representations from T1-weighted MRI, amyloid PET, FDG PET and CT. It combines local image features within atlas-defined regions, allowing the same embeddings to be used for downstream prediction and regional analysis.
 
-## Release status
-
-Version 0.2 provides the OmniMIRA v9 inference architecture, its multi-atlas resources and an epoch-1000 checkpoint. It produces anatomically indexed features and is intended for research use, not clinical diagnosis.
-
-## Installation
+## Install
 
 Requires Python 3.9 or later and PyTorch 2.0 or later.
 
 ```bash
-pip install omnimira
+python -m pip install omnimira==0.2.1
 ```
 
-## Usage
+## Extract ROI features
 
 The wheel contains the checkpoint, model-space templates and atlas definitions. Input NIfTI images must already be spatially normalized to MNI space. The package resamples them to the committed model grid and applies modality-specific intensity normalization.
 
 ```python
 from omnimira import from_pretrained
 
-model = from_pretrained(device="cpu")
+model = from_pretrained(device="cpu")  # use "cuda" when a CUDA GPU is available
 features = model.extract("scan_mni.nii.gz", modality="t1")
-print(features["aal3"].shape)  # (166, 128)
+for atlas, values in features.items():
+    print(atlas, values.shape)
 ```
 
 The command-line interface writes an NPZ with ROI identifiers, names and features:
 
 ```bash
-omnimira scan_mni.nii.gz features.npz --modality t1
+omnimira scan_mni.nii.gz features.npz --modality t1 --device cpu
 ```
 
-The output contains 128-dimensional embeddings for each region: 166 AAL3 regions, 69 Harvard–Oxford regions and 7 Yeo networks.
+The output contains 128-dimensional embeddings for each region: 166 AAL3 regions, 69 Harvard–Oxford regions and 7 Yeo networks. The installed wheel already contains the v9 epoch-1000 checkpoint, atlas definitions and model-space template; no separate model download or source checkout is required.
 
 The modality options are `t1` (T1-weighted MRI), `av45` (amyloid PET), `fdg` (FDG PET) and `ct` (CT).
 
-## Documentation
+## Input requirement
+
+Input must be a skull-stripped image spatially normalized to MNI152 space. The package accepts NIfTI (`.nii` or `.nii.gz`) and normalized NumPy (`.npy`) volumes. It resamples NIfTI input to the model grid and performs modality-specific intensity normalization, but it does not perform raw DICOM conversion, skull stripping or nonlinear registration.
+
+## Reference
 
 - [Input preparation](docs/input_preparation.md)
-- [Atlas setup](docs/atlas_setup.md)
 - [Output format](docs/output_format.md)
-- [Model architecture](docs/model_architecture.md)
-- [Pretraining](docs/training.md)
-
-## Tests
-
-Model and loss tests use synthetic inputs:
-
-```bash
-pip install pytest
-python -m pytest -q tests/test_model_forward.py tests/test_losses.py
-```
-
-The full test suite also requires the atlas and template files.
+- [Complete Python example](examples/extract_roi_features.py)
 
 ## Questions
 
-For questions about the code, please [open an issue](https://github.com/YixinChen-AI/MIRA-Brain-FM/issues).
+For questions, please use the repository issue tracker.
 
 ## License
 
