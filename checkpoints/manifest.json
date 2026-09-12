@@ -9,13 +9,13 @@
       "license": "CC-BY-NC-4.0",
       "license_url": "https://creativecommons.org/licenses/by-nc/4.0/",
       "state": "public_release",
-      "url": "bundled in the omnimira 0.2.0 wheel",
+      "url": "bundled in the omnimira 0.2.1 wheel",
       "provenance": {
         "implementation": "omnimira/models/v9.py",
         "training_fold": 0,
         "epoch_index": 999,
         "completed_epochs": 1000,
-        "note": "Exact epoch-1000 fold-0 checkpoint distributed with OmniMIRA 0.2.0."
+        "note": "Exact epoch-1000 fold-0 checkpoint distributed with OmniMIRA 0.2.1."
       }
     }
   ]

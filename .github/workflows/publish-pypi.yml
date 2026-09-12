@@ -17,6 +17,25 @@ jobs:
       - run: python -m pip install --upgrade build twine
       - run: python -m build
       - run: python -m twine check dist/*
+      - name: Verify bundled release artifacts
+        run: |
+          python - <<'PY'
+          import glob
+          import zipfile
+
+          wheel = glob.glob("dist/*.whl")[0]
+          required = {
+              "omnimira_release/checkpoints/omnimira_v9_fold0_epoch1000.pt": 10_000_000,
+              "omnimira_release/assets/atlases/omnimira_roi_contract_v9.npz": 1_000,
+              "omnimira_release/assets/templates/mni152_ras_model_grid.nii.gz": 1_000,
+          }
+          with zipfile.ZipFile(wheel) as archive:
+              sizes = {item.filename: item.file_size for item in archive.infolist()}
+          for filename, minimum in required.items():
+              assert sizes.get(filename, 0) >= minimum, (filename, sizes.get(filename, 0))
+          assert sum(sizes.values()) >= 10_000_000, sum(sizes.values())
+          print("Bundled release artifacts verified", required)
+          PY
       - uses: actions/upload-artifact@v4
         with:
           name: python-package

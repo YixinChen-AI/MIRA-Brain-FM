@@ -22,6 +22,11 @@
 !checkpoints/manifest.json
 !checkpoints/release_checkpoint_inventory.json
 
+# Public inference artifacts intentionally shipped inside the PyPI wheel.
+!omnimira_release/assets/templates/*.nii.gz
+!omnimira_release/assets/atlases/omnimira_roi_contract_v9.npz
+!omnimira_release/checkpoints/omnimira_v9_fold0_epoch1000.pt
+
 # Local test / build noise
 .pytest_cache/
 *.egg-info/
