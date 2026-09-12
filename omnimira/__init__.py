@@ -9,6 +9,7 @@ from omnimira.inference import (
 )
 from omnimira.atlas import AtlasMeta, build_patch_to_roi_lookup
 from omnimira.io import load_volume
+from omnimira.pretrained import OmniMIRAExtractor, from_pretrained
 from omnimira.losses import OmniMIRALoss, LOSS_REGISTRY
 
 __all__ = [
@@ -17,6 +18,7 @@ __all__ = [
     "source_metadata", "validate_source_metadata",
     "AtlasMeta", "build_patch_to_roi_lookup",
     "load_volume",
+    "OmniMIRAExtractor", "from_pretrained",
     "OmniMIRALoss", "LOSS_REGISTRY",
 ]
-__version__ = "0.1.0"
+__version__ = "0.2.0"

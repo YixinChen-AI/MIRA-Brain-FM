@@ -48,6 +48,9 @@ def resource_path(relative_path: str) -> Path:
     source = _source_root() / relative_path
     if source.is_file():
         return source
+    bundled_source = _source_root() / "omnimira_release" / relative_path
+    if bundled_source.is_file():
+        return bundled_source
 
     try:
         distribution = metadata.distribution("omnimira")

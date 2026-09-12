@@ -43,6 +43,15 @@ ATLAS_LABEL_HASHES = {
     "yeo7": "ca23ed960895a5b847603672ef2110b4e8ff13b0552359920b18fa58abdf48b8",
 }
 
+@lru_cache(maxsize=1)
+def _bundled_roi_contract():
+    """Load the compact release mapping without redistributing atlas volumes."""
+    try:
+        path = resource_path("assets/atlases/omnimira_roi_contract_v9.npz")
+    except InputContractError:
+        return None
+    return np.load(path, allow_pickle=False)
+
 
 @dataclass(frozen=True)
 class RoiMetadata:
@@ -129,6 +138,9 @@ def dense_label_map(name: str) -> dict[int, int]:
 @lru_cache(maxsize=1)
 def roi_metadata() -> dict[str, RoiMetadata]:
     """Return raw atlas IDs and names in the model's dense row order."""
+    contract = _bundled_roi_contract()
+    if contract is not None:
+        return {name: RoiMetadata(ids=contract[f"{name}_ids"], names=contract[f"{name}_names"]) for name in ATLAS_ORDER}
     result = {}
     for name in ATLAS_ORDER:
         ids = raw_label_ids(name)
@@ -143,6 +155,9 @@ def roi_metadata() -> dict[str, RoiMetadata]:
 @lru_cache(maxsize=1)
 def fixed_patch_to_roi() -> dict[str, np.ndarray]:
     """Build ROI-by-patch memberships in canonical RAS space."""
+    contract = _bundled_roi_contract()
+    if contract is not None:
+        return {name: contract[f"{name}_membership"].astype(bool) for name in ATLAS_ORDER}
     result = {}
     for name in ATLAS_ORDER:
         image = resample_atlas_to_model(name)

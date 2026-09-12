@@ -1,0 +1,116 @@
+schema_version: "2.0"
+contract_name: OmniMIRA public RAS model-space contract
+model_shape: [96, 112, 96]
+orientation: RAS
+space: MNI152-OmniMIRA-96x112x96-RAS
+affine_atol: 1.0e-5
+error_prefix: "Input contract violation:"
+
+resources:
+  model_grid:
+    path: assets/templates/mni152_ras_model_grid.nii.gz
+    sha256: e183125228dbe45ef0331695f2520b8b6c25142347347c6dda23bb6a2e8585db
+    shape: [96, 112, 96]
+    orientation: RAS
+    affine:
+      - [1.894736842105263, 0.0, 0.0, -90.0]
+      - [0.0, 1.945945945945946, 0.0, -126.0]
+      - [0.0, 0.0, 1.894736842105263, -72.0]
+      - [0.0, 0.0, 0.0, 1.0]
+    qform_code: 1
+    sform_code: 1
+  model_brain_mask:
+    path: assets/templates/model_brain_mask_ras.nii.gz
+    sha256: f8d3c177f73d3a7f94882facc354cecc8af219fe20f0f798f98594298bdf0852
+    shape: [96, 112, 96]
+    orientation: RAS
+    affine:
+      - [1.894736842105263, 0.0, 0.0, -90.0]
+      - [0.0, 1.945945945945946, 0.0, -126.0]
+      - [0.0, 0.0, 1.894736842105263, -72.0]
+      - [0.0, 0.0, 0.0, 1.0]
+    qform_code: 1
+    sform_code: 1
+    foreground_voxels: 213773
+  pet_reference_mask:
+    path: assets/templates/aal3_labels_95_120_model_reference_mask.nii.gz
+    sha256: 1bde883912a36c1aaa5115dda92ab3ed981bd0cef7c7d068bbdfd8ce8220cd7a
+    shape: [96, 112, 96]
+    orientation: RAS
+    affine:
+      - [1.894736842105263, 0.0, 0.0, -90.0]
+      - [0.0, 1.945945945945946, 0.0, -126.0]
+      - [0.0, 0.0, 1.894736842105263, -72.0]
+      - [0.0, 0.0, 0.0, 1.0]
+    qform_code: 1
+    sform_code: 1
+    foreground_voxels: 28310
+
+resampling:
+  coordinate_system: world
+  continuous_interpolation: trilinear
+  label_interpolation: nearest
+  target: model_grid
+
+pet_reference:
+  resource: pet_reference_mask
+  atlas_name: AAL3v1
+  labels: [95, 120]
+  minimum_voxels: 100
+
+modalities:
+  t1:
+    orientation: RAS
+    space: MNI152-OmniMIRA-96x112x96-RAS
+    template: model_grid
+    brain_mask: model_brain_mask
+    normalization: t1_percentile_1_99
+  av45:
+    orientation: RAS
+    space: MNI152-OmniMIRA-96x112x96-RAS
+    template: model_grid
+    brain_mask: model_brain_mask
+    normalization: pet_cerebellum_suvr_clip_0_3_div3
+  fdg:
+    orientation: RAS
+    space: MNI152-OmniMIRA-96x112x96-RAS
+    template: model_grid
+    brain_mask: model_brain_mask
+    normalization: pet_cerebellum_suvr_clip_0_3_div3
+  ct:
+    orientation: RAS
+    space: MNI152-OmniMIRA-96x112x96-RAS
+    template: model_grid
+    brain_mask: model_brain_mask
+    normalization: ct_hu_clip_0_80_div80
+
+normalization:
+  t1:
+    percentiles: [1, 99]
+    minimum_voxels: 100
+    minimum_range: 1.0e-8
+  pet:
+    minimum_mean: 1.0e-8
+    clip: [0.0, 3.0]
+    divisor: 3.0
+  ct:
+    clip_hu: [0.0, 80.0]
+    divisor: 80.0
+
+npy_sidecar:
+  suffix: .npy.json
+  preprocessing_state: normalized_v2
+  required_fields:
+    - schema_version
+    - input_contract_sha256
+    - template_sha256
+    - brain_mask_sha256
+    - space
+    - shape
+    - affine
+    - qform_code
+    - sform_code
+    - orientation
+    - modality
+    - normalization
+    - preprocessing_state

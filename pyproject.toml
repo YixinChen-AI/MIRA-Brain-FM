@@ -1,13 +1,21 @@
 [build-system]
-requires = ["setuptools>=61"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "omnimira"
-version = "0.1.0"
+version = "0.2.0"
 description = "OmniMIRA: per-ROI universal brain feature space"
 readme = "README.md"
 requires-python = ">=3.9"
+license = "Apache-2.0"
+license-files = ["LICENSE", "MODEL_LICENSE.md", "THIRD_PARTY_NOTICES.md"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+]
 dependencies = [
     "torch>=2.0",
     "numpy>=1.23",
@@ -20,16 +28,22 @@ dependencies = [
 viz = ["matplotlib>=3.5"]
 demo = ["matplotlib>=3.5", "gradio>=4.0", "nilearn>=0.10"]
 
+[project.scripts]
+omnimira = "omnimira.cli:main"
+
 [tool.setuptools.packages.find]
 include = ["omnimira*"]
 
-[tool.setuptools.data-files]
-"omnimira_release/configs" = [
-    "configs/input_contract.yaml",
-    "configs/output_schema.json",
-    "configs/omnimira_3atlas.yaml",
+[tool.setuptools.package-data]
+omnimira_release = [
+    "assets/templates/*.nii.gz",
+    "assets/atlases/*.json",
+    "assets/atlases/*.npz",
+    "checkpoints/*.pt",
+    "checkpoints/*.md",
+    "configs/*.yaml",
+    "configs/*.json",
 ]
-"omnimira_release/assets/atlases" = ["assets/atlases/*.json"]
 
 # Self-contained test discovery: keeps `pytest` run from this package root
 # from walking up into the internal monorepo's pytest.ini.

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://omnimira.org/schemas/roi-features-1.0.json",
+  "title": "OmniMIRA ROI feature source metadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "input_contract_version", "input_contract_sha256",
+    "input_sha256", "template_sha256", "brain_mask_sha256", "space",
+    "shape", "affine", "qform_code", "sform_code", "orientation",
+    "modality", "normalization", "preprocessing_state"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "input_contract_version": {"const": "2.0"},
+    "input_contract_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "input_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "template_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "brain_mask_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "space": {"const": "MNI152-OmniMIRA-96x112x96-RAS"},
+    "shape": {
+      "type": "array", "prefixItems": [{"const": 96}, {"const": 112}, {"const": 96}],
+      "minItems": 3, "maxItems": 3
+    },
+    "affine": {
+      "const": [[1.894736842105263,0.0,0.0,-90.0],[0.0,1.945945945945946,0.0,-126.0],[0.0,0.0,1.894736842105263,-72.0],[0.0,0.0,0.0,1.0]]
+    },
+    "qform_code": {"const": 1},
+    "sform_code": {"const": 1},
+    "orientation": {"const": "RAS"},
+    "modality": {"enum": ["t1", "av45", "fdg", "ct"]},
+    "normalization": {
+      "enum": ["t1_percentile_1_99", "pet_cerebellum_suvr_clip_0_3_div3", "ct_hu_clip_0_80_div80"]
+    },
+    "preprocessing_state": {"const": "normalized_v2"}
+  }
+}

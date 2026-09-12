@@ -9,6 +9,7 @@ from omnimira.models.omnimira import (
     HeadSpec,
     OmniMIRA,
 )
+from omnimira.models.v9 import OmniMIRAV9
 
 __all__ = [
     "ACTIVE_HEAD_NAMES",
@@ -18,4 +19,5 @@ __all__ = [
     "RELEASE_HEAD_SPECS",
     "HeadSpec",
     "OmniMIRA",
+    "OmniMIRAV9",
 ]

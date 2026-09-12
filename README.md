@@ -6,30 +6,32 @@ OmniMIRA learns brain-region representations from T1-weighted MRI, amyloid PET, 
 
 ## Release status
 
-This is an initial source-code release. The included implementation and configurations are from an earlier development version and are being aligned with the final manuscript. Pretrained weights are not yet available. See the [release roadmap](TODO.md) for planned updates.
+Version 0.2 provides the OmniMIRA v9 inference architecture, its multi-atlas resources and an epoch-1000 checkpoint. It produces anatomically indexed features and is intended for research use, not clinical diagnosis.
 
 ## Installation
 
 Requires Python 3.9 or later and PyTorch 2.0 or later.
 
 ```bash
-git clone https://github.com/YixinChen-AI/MIRA-Brain-FM.git
-cd MIRA-Brain-FM
-python -m venv .venv
-source .venv/bin/activate
-pip install -e .
+pip install omnimira
 ```
 
 ## Usage
 
-Feature extraction requires a pretrained checkpoint and the atlas and MNI reference files, which are not included in this release. The example interface is:
+The wheel contains the checkpoint, model-space templates and atlas definitions. Input NIfTI images must already be spatially normalized to MNI space. The package resamples them to the committed model grid and applies modality-specific intensity normalization.
+
+```python
+from omnimira import from_pretrained
+
+model = from_pretrained(device="cpu")
+features = model.extract("scan_mni.nii.gz", modality="t1")
+print(features["aal3"].shape)  # (166, 128)
+```
+
+The command-line interface writes an NPZ with ROI identifiers, names and features:
 
 ```bash
-python examples/extract_roi_features.py \
-  --input scan_mni.nii.gz \
-  --modality t1 \
-  --checkpoint /path/to/checkpoint.pt \
-  --output features.npz
+omnimira scan_mni.nii.gz features.npz --modality t1
 ```
 
 The output contains 128-dimensional embeddings for each region: 166 AAL3 regions, 69 Harvard–Oxford regions and 7 Yeo networks.
@@ -61,6 +63,6 @@ For questions about the code, please [open an issue](https://github.com/YixinChe
 
 ## License
 
-Source code is available under the [Apache 2.0 license](LICENSE). Third-party resources have [separate terms](THIRD_PARTY_NOTICES.md).
+Source code is available under the [Apache 2.0 license](LICENSE). The bundled pretrained model weights are licensed separately under [CC BY-NC 4.0](MODEL_LICENSE.md), which does not permit commercial use. Third-party resources have [separate terms](THIRD_PARTY_NOTICES.md).
 
 For research use only; not for clinical diagnosis.
